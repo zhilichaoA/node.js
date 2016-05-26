@@ -1,7 +1,6 @@
 /*
 * 观察者  发布订阅
 * */
-
 function Event(){
     this._events = {};
 }
@@ -19,9 +18,18 @@ Event.prototype.on = function (eventName,callback) {
         this._events[eventName] = [callback];
     }
 };
+Event.prototype.once = function (eventName,callback) {
+    //触发一次
+};
 Event.prototype.off = function(eventName,callback){
-
-}
+    //off方法将数组里的函数等于callback移出掉
+    var cur = this._events[eventName];
+    //filter数组里的过滤方法
+    //返回一个过滤后的新的数组
+    this._events[eventName] =cur.filter(function (item) {
+        return callback!=item;
+    });
+};
 //发射事件
 Event.prototype.emit = function (eventName) {
     //获取除了第一个以外的参数
@@ -40,6 +48,6 @@ var event = new Event();
 function eat(who){
     console.log(who+"吃饭");
 }
-event.on("我饿了",eat);
-event.off("我饿了",eat);
+event.once("我饿了",eat);
+event.emit("我饿了","珠峰");
 event.emit("我饿了","珠峰");
