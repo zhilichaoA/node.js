@@ -25,3 +25,8 @@ Buffer.concat1=function(list,len){
     return newBuffer.slice(0,index);
 };
 console.log(Buffer.concat1([buf1,buf2],100).toString());
+
+Buffer.isBuffer(buf2);
+//判断是否是buffer 是buffer返回true
+console.log(Buffer.isBuffer(buf2));
+
