@@ -31,8 +31,6 @@ var str = '123';
 console.log(str.length);
 var buff = new Buffer("珠峰培训");
 console.log(buff.length);
-
-
 /*
 var a = [1,2,3];
 var b = a.slice(0,2);
