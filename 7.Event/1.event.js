@@ -19,7 +19,12 @@ Event.prototype.on = function (eventName,callback) {
     }
 };
 Event.prototype.once = function (eventName,callback) {
-    //触发一次
+    //触发一次 先绑定 -> 执行 -> 再删除
+    function one(){//先让其执行
+        callback.apply(this,arguments);
+        this.off(eventName,one);
+    }
+    this.on(eventName,one);
 };
 Event.prototype.off = function(eventName,callback){
     //off方法将数组里的函数等于callback移出掉
@@ -51,3 +56,7 @@ function eat(who){
 event.once("我饿了",eat);
 event.emit("我饿了","珠峰");
 event.emit("我饿了","珠峰");
+/*
+* on订阅事件 把要订阅的事件和事件的名字做对应 一个事件名对应多个事件
+* emit 发布事件 将对应的事件名所存储的事件一一执行
+* */
