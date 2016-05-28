@@ -1,4 +1,5 @@
 var fs = require('fs');
+
 //导入fs模块
 
 //同步读取 异步读取
