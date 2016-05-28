@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+    <title></title>
+    <link rel="stylesheet" href="./index.css"/>
+</head>
+<body>
+你好中国
+<span id="time"></span>
+<img src="1.jpg">
+<script src="index.js"></script>
+<script>
+    setInterval(function(){
+//创建一个  XMLHttpRequest
+        //1.创建ajax请求
+        var xhr=new XMLHttpRequest();
+        //2.初始化
+        xhr.open("GET","/ajax",true);
+        //3.注册监听函数
+        xhr.onreadystatechange=function(){
+            console.log(xhr.readyState)
+            if(xhr.readyState==4 && xhr.status==200){
+                var time=document.getElementById("time")
+                time.innerHTML=xhr.responseText
+            }
+        }
+        //4.发送数据 向后台发送数据
+        xhr.send();
+
+    },1000)
+
+
+</script>
+</body>
+</html>
