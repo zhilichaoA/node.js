@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="public/bootstrap.css"/>
+</head>
+
+<body>
+<div class="container">
+    <ul class="nav nav-tabs" style="margin-top: 20px;">
+        <li role="presentation"  class="active"><a href="#">列表页</a></li>
+        <li role="presentation" ><a href="#">添加用户</a></li>
+    </ul>
+
+    <div class="panel panel-primary " style="margin-top: 20px;">
+        <div class="panel-heading text-center">用户信息</div>
+        <div class="panel-body">
+            <table class="table table-bordered text-center table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th class="text-center">姓名</th>
+                        <th class="text-center">年龄</th>
+                        <th class="text-center">状态</th>
+                        <th class="text-center">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="userList">
+
+
+
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pager" id="pagHtml">
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li><a href="javascript:getUsers(1,10)">1</a></li>
+                    <li><a href="javascript:getUsers(2,10)">2</a></li>
+                    <li><a href="javascript:getUsers(3,10)">3</a></li>
+                    <li><a href="javascript:getUsers(4,10)">4</a></li>
+                    <li><a href="javascript:getUsers(5,10)">5</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">用户信息</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="name" class="control-label">姓名:</label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="age" class="control-label">年龄:</label>
+                        <input type="text" class="form-control" id="age">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary">修改</button>
+                <button type="button" class="btn btn-default" >取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="public/jquery.js"></script>
+<script src="public/bootstrap.js"></script>
+<script>
+    function getUsers(page,pageSize){
+        var xhr=new XMLHttpRequest();
+        //拼接  接口地址  将需要的数据拼接到接口中（也就是url）
+        var url="getList?page="+page+"&pagesize="+pageSize;
+        xhr.open("get",url);
+        xhr.onreadystatechange=function(){
+            //ajax数据接受完成以后
+            if(xhr.status==200 && xhr.readyState==4 ){
+                var obj=JSON.parse(xhr.responseText);
+                console.log(obj);
+                //学生列表
+                var htmlStr="";
+                var pageHtml="";
+                //如果后台返回的结果是成功！那么将后台返回的数据循环拼接并将数据显示在页面中
+                if(obj.success=="ok"){
+                    //循环返回数据拼接成 html
+                    for(var i=0;i<obj.result.length; i++){
+                        var current=obj.result[i];
+                        htmlStr+="<tr>";
+                        htmlStr+="<td>"+current.name+"</td>";
+                        htmlStr+=" <td>"+current.age+"</td>";
+                        htmlStr+=" <td></td>";
+                        htmlStr+="<td>删除 <a href='javascript:open()'>修改</a></td>";
+                        htmlStr+="</tr>";
+                    }
+
+
+                    if(obj.index!=1){
+                        pageHtml+="<li>";
+                        pageHtml+="<a href='javascript:getUsers("+(Number(obj.index)-1)+",10)' aria-label='Previous'>";
+                        pageHtml+="<span aria-hidden='true'>&laquo;</span>";
+                        pageHtml+="</a>";
+                        pageHtml+="</li>";
+                    }
+
+
+                    //<li><a href="javascript:getUsers(2,10)">3</a></li>
+                    //<li><a href="javascript:getUsers(3,10)">3</a></li>
+                    //循环生产中间的页脚
+                    for(var i=1;i<=obj.allPage;i++){
+                        //第一次循环
+                        pageHtml+="<li><a href='javascript:getUsers("+i+",10)'>"+i+"</a></li>";
+                    }
+                    //<li><a href="javascript:getUsers(1,10)">1</a></li>
+                    //<li><a href="javascript:getUsers(2,10)">2</a></li>
+                    //<li><a href="javascript:getUsers(3,10)">3</a></li>
+
+                    if(obj.allPage!=obj.index){
+                        pageHtml+="<li>";
+                        pageHtml+="<a href='javascript:getUsers("+(Number(obj.index)+1)+",10)' aria-label='Next'>"
+                        pageHtml+="<span aria-hidden='true'>&raquo;</span>"
+                        pageHtml+="</a>"
+                        pageHtml+="</li>"
+                    }
+                    //console.log(htmlStr);
+                }
+                //如果后台返回错误  那么将错误结果拼接出来
+                else
+                {
+                    htmlStr+="<tr><td colspan='4'>"+obj.error+"</td></tr>";
+                }
+                //将拼接好的html页面 放在对应的位置
+                document.querySelector("#userList").innerHTML=htmlStr;
+                document.querySelector("#pagHtml").innerHTML=pageHtml;
+
+            }
+        }
+        xhr.send();
+    }
+    getUsers(1,10);
+    function open(){
+        $('#exampleModal').modal('show')
+    }
+
+</script>
+
+</body>
+</html>

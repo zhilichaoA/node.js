@@ -24,6 +24,7 @@ var server=http.createServer(function(req,res){
     {
         if(req.method=="GET"){
             console.log(urlObj.query)
+            res.setHeader("Content-Type","text/html;charset=utf8")
             res.end(JSON.stringify(urlObj.query))
         }
         else if(req.method=="POST"){

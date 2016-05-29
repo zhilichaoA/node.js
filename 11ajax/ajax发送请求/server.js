@@ -14,12 +14,13 @@ http.createServer(function(req,res){
         res.end(JSON.stringify(urlObj.query));
     }
     else if(urlObj.pathname=="/post"){
-        var result="";
-        req.on("data",function(data){
-            result+=data.toString();
-        })
-        req.on("end",function(){
-            res.end(result)
-        })
+        req.pipe(res);
+        //var result="";
+        //req.on("data",function(data){
+        //    result+=data.toString();
+        //})
+        //req.on("end",function(){
+        //    res.end(result)
+        //})
     }
 }).listen("8080");
